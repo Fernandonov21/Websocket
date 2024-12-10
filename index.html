@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Test</title>
+</head>
+<body>
+    <h1>WebSocket Test</h1>
+    <textarea id="messages" rows="10" cols="50" readonly></textarea><br>
+    <input type="text" id="messageInput" placeholder="Write your message...">
+    <button id="sendButton">Send Message</button>
+
+    <script>
+        // Abre la conexión WebSocket
+        const socket = new WebSocket("ws://localhost:8000/ws");
+
+        // Función para mostrar los mensajes recibidos
+        socket.onmessage = function(event) {
+            const messages = document.getElementById("messages");
+            messages.value += "Server: " + event.data + "\n";
+        };
+
+        // Función para detectar cuando la conexión está abierta
+        socket.onopen = function(event) {
+            console.log("WebSocket is open now.");
+        };
+
+        // Función para detectar cuando la conexión se cierra
+        socket.onclose = function(event) {
+            console.log("WebSocket is closed now.");
+        };
+
+        // Función para enviar el mensaje cuando se presiona el botón
+        document.getElementById("sendButton").onclick = function() {
+            const message = document.getElementById("messageInput").value;
+            if (message) {
+                socket.send(message);
+                const messages = document.getElementById("messages");
+                messages.value += "You: " + message + "\n";
+                document.getElementById("messageInput").value = ''; // Limpia el input
+            }
+        };
+    </script>
+</body>
+</html>
